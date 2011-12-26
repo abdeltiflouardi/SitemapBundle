@@ -51,6 +51,12 @@ class SitemapGenerator
 
         // Create <urlset> root tag
         $urlset = $dom->createElement('urlset');
+        
+        // Add attribute of urlset
+        $xmlns = $dom->createAttribute('xmlns');
+        $urlsetText = $dom->createTextNode('http://www.sitemaps.org/schemas/sitemap/0.9'); 
+        $urlset->appendChild($xmlns);
+        $xmlns->appendChild($urlsetText);
 
         // Fetch All entities
         $entities = $this->em->getRepository($this->configs['entity'])->findAll();
@@ -99,7 +105,7 @@ class SitemapGenerator
                 $value = $entity->$method();
 
                 if ($value instanceof DateTime) {
-                    $value = $value->format('r');
+                    $value = $value->format('Y-m-d');
                 } else {
                     $value = substr($value, 0, 100);
                 }
