@@ -9,7 +9,7 @@ use Symfony\Component\HttpFoundation\Response;
 class SitemapController extends Controller
 {
     /**
-     * @Route("/sitemap/generate")
+     * @Route("/sitemaps/generate")
      */
     public function generateAction()
     {
