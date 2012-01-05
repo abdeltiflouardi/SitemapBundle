@@ -36,16 +36,16 @@ Configuration
 example
 -------
 
-os_sitemap:
-  path: "%kernel.root_dir%/../web/sitemap.xml"  # this is path where you want to save sitemap file
-  entity: AppCoreBundle:Post  # Use this entity to generate my file
-  loc: {route: _post, params: {post_id: id, title: {field: title, class: App\CoreBundle\Twig\OutputExtension, method: slug}}} # this route to generate loc link
-  lastmod: updatedAt # use this field to generate lastmod
-  priority: 0.5 # priority
+     os_sitemap:
+         path: "%kernel.root_dir%/../web/sitemap.xml"  # this is path where you want to save sitemap file
+         entity: AppCoreBundle:Post  # Use this entity to generate my file
+         loc: {route: _post, params: {post_id: id, title: {field: title, class: App\CoreBundle\Twig\OutputExtension, method: slug}}} # this route to generate loc link
+         lastmod: updatedAt # use this field to generate lastmod
+         priority: 0.5 # priority
 
 In your controller
 ==================
 
-        $sitemapGenerator = $this->get('sitemap.generator');
-        $sitemapGenerator->generate();
+     $sitemapGenerator = $this->get('sitemap.generator');
+     $sitemapGenerator->generate();
 
