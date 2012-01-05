@@ -1,3 +1,5 @@
+## site using this bundle http://www.phphub.net/sitemap.xml
+
 Installation using github
 =========================
 
@@ -33,15 +35,36 @@ Add in your file app/autoload.php
 Configuration
 =============
 
+params
+-------
+
+* **path**: this is path where you want to save sitemap file
+* **entity**: Use this entity to generate my file
+* **loc**: this is a sitemap tag. we can use our route to generate link.
+* **lastmod**: use this param to generate lastmod tag
+* **priority**: priority
+
+
 example
 -------
 
      os_sitemap:
-         path: "%kernel.root_dir%/../web/sitemap.xml"  # this is path where you want to save sitemap file
-         entity: AppCoreBundle:Post  # Use this entity to generate my file
-         loc: {route: _post, params: {post_id: id, title: {field: title, class: App\CoreBundle\Twig\OutputExtension, method: slug}}} # this route to generate loc link
-         lastmod: updatedAt # use this field to generate lastmod
-         priority: 0.5 # priority
+         path: "%kernel.root_dir%/../web/sitemap.xml"
+         entity: AppCoreBundle:Post
+         loc: {route: _post, params: {post_id: id, title: slug}}
+         lastmod: updatedAt
+         priority: 0.5
+
+My route is:
+_post:
+  pattern: /{post_id}/{title}/
+
+My database table
+  post(id, title, slug, text, createdAt, updatedAt)
+
+if you have not slug field and you want to generate slug from title field use this configuration
+
+loc: {route: _post, params: {post_id: id, {field: title, class: App\CodeBundle\Inflector, method: slug}}}
 
 In your controller
 ==================
