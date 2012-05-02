@@ -1,0 +1,22 @@
+{
+  "name": "os/sitemap-bundle",
+  "description": "OS Sitemap Bundle for Symfony2",
+  "keywords": ["sitemap"],
+  "homepage": "http://github.com/ouardisoft/SitemapBundle",
+  "type": "symfony-bundle",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "LOUARDI Abdeltif",
+      "email": "louardi.abdeltif@yahoo.fr",
+      "homepage": "http://phphub.net"
+    }
+  ],
+  "require": {
+    "php": ">=5.2.6"
+  },
+  "autoload": {
+      "psr-0": { "OS\\SitemapBundle": "" }
+  },
+  "target-dir": "OS/SitemapBundle"
+}
