@@ -61,6 +61,8 @@ class SitemapGenerator
 
         // Iterate over all routes in the config.
         foreach($this->configs['routes'] as $route => $routeConfig) {
+
+            var_dump($this->configs['routes'][$route]);
             // Fetch All entities
             $entities = $this->em->getRepository($this->configs['routes'][$route]['entity'])->findAll();
 
@@ -121,12 +123,18 @@ class SitemapGenerator
             return $value;
         } else {
             extract($configs[$tag]);
-
+            
             foreach ($params as $key => $param) {
                 if (is_array($param)) {
-                    $value        = $entity->{'get' . ucfirst($param['field'])}();
-                    $object       = new $param['class'];
-                    $params[$key] = $object->{$param['method']}($value);
+                    // params: { key: {value: <some value>, static: true}}
+                    if(isset($param['static']) && $param['static']) {
+                        $params[$key]  = $param['value'];
+                    // params: { key: {class: <some class>, method: <some method>, field: <some method>}}
+                    } else {           
+                        $value        = $entity->{'get' . ucfirst($param['field'])}();
+                        $object       = new $param['class'];
+                        $params[$key] = $object->{$param['method']}($value);
+                    }
                 } else {
                     $value        = $entity->{'get' . ucfirst($param)}();
                     $params[$key] = $value;
@@ -135,7 +143,6 @@ class SitemapGenerator
             return $this->router->generate($route, $params, true);
         }
     }
-
 }
 
 ?>
