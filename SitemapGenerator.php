@@ -48,7 +48,8 @@ class SitemapGenerator
         $dom = new DOMDocument('1.0', 'UTF-8');
         $dom->formatOutput = true;
         $dom->substituteEntities = false;
-
+        
+            
         // Create <urlset> root tag
         $urlset = $dom->createElement('urlset');
         
@@ -58,29 +59,32 @@ class SitemapGenerator
         $urlset->appendChild($xmlns);
         $xmlns->appendChild($urlsetText);
 
-        // Fetch All entities
-        $entities = $this->em->getRepository($this->configs['entity'])->findAll();
+        // Iterate over all routes in the config.
+        foreach($this->configs['routes'] as $route => $routeConfig) {
+            // Fetch All entities
+            $entities = $this->em->getRepository($this->configs['routes'][$route]['entity'])->findAll();
 
-        /*
-         *  Generate <url> tags and bind them in urlset
-         *  <url>
-         *     <loc>link</loc>
-         *     <lastmod>date</lastmod>
-         *     <priority>date</priority>
-         *  </url>
-         */
-        $tags = array('loc', 'lastmod', 'priority');
-        foreach ($entities as $entity) {
-            $url = $dom->createElement('url');
-            foreach ($tags as $tag) {
-                $text = $dom->createTextNode($this->getTagValue($entity, $tag));
-                $elem = $dom->createElement($tag);
-                $elem->appendChild($text);
+            /*
+             *  Generate <url> tags and bind them in urlset
+             *  <url>
+             *     <loc>link</loc>
+             *     <lastmod>date</lastmod>
+             *     <priority>date</priority>
+             *  </url>
+             */
+            $tags = array('loc', 'lastmod', 'priority');
+            foreach ($entities as $entity) {
+                $url = $dom->createElement('url');
+                foreach ($tags as $tag) {
+                    $text = $dom->createTextNode($this->getTagValue($this->configs['routes'][$route], $entity, $tag));
+                    $elem = $dom->createElement($tag);
+                    $elem->appendChild($text);
 
-                $url->appendChild($elem);
+                    $url->appendChild($elem);
+                }
+
+                $urlset->appendChild($url);
             }
-
-            $urlset->appendChild($url);
         }
 
         $dom->appendChild($urlset);
@@ -97,10 +101,11 @@ class SitemapGenerator
      * @param string $tag
      * @return string 
      */
-    public function getTagValue($entity, $tag)
+    public function getTagValue($configs, $entity, $tag)
+        
     {
-        if (!is_array($this->configs[$tag])) {
-            $method = 'get' . ucfirst($this->configs[$tag]);
+        if (!is_array($configs[$tag])) {
+            $method = 'get' . ucfirst($configs[$tag]);
             if (method_exists($entity, $method)) {
                 $value = $entity->$method();
 
@@ -110,12 +115,12 @@ class SitemapGenerator
                     $value = substr($value, 0, 100);
                 }
             } else {
-                $value = $this->configs[$tag];
+                $value = $configs[$tag];
             }
 
             return $value;
         } else {
-            extract($this->configs[$tag]);
+            extract($configs[$tag]);
 
             foreach ($params as $key => $param) {
                 if (is_array($param)) {
