@@ -39,25 +39,29 @@ params
 -------
 
 * **path**: this is path where you want to save sitemap file
-* **entity**: Use this entity to generate my file
-* **loc**: this is a sitemap tag. we can use our route to generate link.
-* **lastmod**: use this param to generate lastmod tag
-* **priority**: priority
+* **routes** : the routes
+    * **entity**: Use this entity to generate my file, optional
+    * **loc**: this is a sitemap tag. we can use our route to generate link.
+    * **lastmod**: use this param to generate lastmod tag
+    * **priority**: priority
 
 
-example
+examples
 -------
 
      os_sitemap:
          path: "%kernel.root_dir%/../web/sitemap.xml"
-         entity: AppCoreBundle:Post
-         loc: {route: _post, params: {post_id: id, title: slug}}
-         lastmod: updatedAt
-         priority: 0.5
+         
+         routes:  
+          - entity: AppCoreBundle:Post
+            loc: {route: _post, params: {post_id: id, title: slug}}
+            lastmod: updatedAt
+            priority: 0.5
 
 My route is:
-_post:
-  pattern: /{post_id}/{title}/
+
+    _post:
+        pattern: /{post_id}/{title}/
 
 My database table
   post(id, title, slug, text, createdAt, updatedAt)
@@ -65,6 +69,53 @@ My database table
 if you have not slug field and you want to generate slug from title field use this configuration
 
 loc: {route: _post, params: {post_id: id, {field: title, class: App\CodeBundle\Inflector, method: slug}}}
+
+Variables in the `params` in the `loc` setting can be static. When static the string will
+be passed to the controller as a string, and will not be fetched from the entity.
+
+     os_sitemap:
+         path: "%kernel.root_dir%/../web/sitemap.xml"
+         
+         routes:  
+          - entity: AppCoreBundle:Post
+            loc: {route: _post, params: {post_id: id, {title: cookbook, static: true}}}
+            lastmod: updatedAt
+            priority: 0.5
+
+The generated url in the sitemap will look like: http://example.com/1/cookbook
+
+When a route does not contain entity variables, the entity parameter is not needed.
+All parameters will be assumed static. 
+
+     os_sitemap:
+         path: "%kernel.root_dir%/../web/sitemap.xml"
+         
+         routes:  
+          - loc: {route: _static, params: {page_name: about}}
+            lastmod: 2013-05-16
+            priority: 0.5
+
+When my route is
+
+    _static:
+        pattern: /{page_name}
+
+The generated url in the sitemap will look like http://example.com/about
+
+When combining parts of the example:
+     
+     os_sitemap:
+         path: "%kernel.root_dir%/../web/sitemap.xml"
+         
+         routes:  
+          - loc: {route: _static, params: {page_name: about}}
+            lastmod: 2013-05-16
+            priority: 0.5
+
+          - entity: AppCoreBundle:Post
+            loc: {route: _post, params: {post_id: id, {title: cookbook, static: true}}}
+            lastmod: updatedAt
+            priority: 0.5
 
 In your controller
 ==================
