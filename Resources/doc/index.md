@@ -8,7 +8,7 @@ in your file deps add this lines
     [OSSitemapBundle]
         git=http://github.com/ouardisoft/SitemapBundle.git
         target=bundles/OS/SitemapBundle
-    
+
 
 Execute
 
@@ -22,7 +22,7 @@ Add in your file app/AppKernel.php
             ...
             new OS\SitemapBundle\OSSitemapBundle(),
             ...
-    }    
+    }
 
 Add in your file app/autoload.php
 
@@ -30,7 +30,7 @@ Add in your file app/autoload.php
         ...
         'OS' => __DIR__ . '/../vendor/bundles',
         ...
-     
+
 
 Configuration
 =============
@@ -51,8 +51,8 @@ examples
 
      os_sitemap:
          path: "%kernel.root_dir%/../web/sitemap.xml"
-         
-         routes:  
+
+         routes:
           - entity: AppCoreBundle:Post
             loc: {route: _post, params: {post_id: id, title: slug}}
             lastmod: updatedAt
@@ -61,36 +61,38 @@ examples
 My route is:
 
     _post:
-        pattern: /{post_id}/{title}/
+        pattern: /{category}/{post_id}/{title}/
 
 My database table
-  post(id, title, slug, text, createdAt, updatedAt)
+  post(id, title, slug, text, createdAt, updatedAt, category)
+  category(id, title)
 
 if you have not slug field and you want to generate slug from title field use this configuration
 
-loc: {route: _post, params: {post_id: id, {field: title, class: App\CodeBundle\Inflector, method: slug}}}
+loc: {route: _post, params: { category: category.title, post_id: id, {field: title, class: App\CodeBundle\Inflector, method: slug}}}
 
 Variables in the `params` in the `loc` setting can be static. When static the string will
 be passed to the controller as a string, and will not be fetched from the entity.
 
      os_sitemap:
          path: "%kernel.root_dir%/../web/sitemap.xml"
-         
-         routes:  
+
+         routes:
           - entity: AppCoreBundle:Post
-            loc: {route: _post, params: {post_id: id, {title: cookbook, static: true}}}
+            loc: {route: _post, params: { category: category.title, post_id: id, {title: cookbook, static: true}}}
             lastmod: updatedAt
             priority: 0.5
 
-The generated url in the sitemap will look like: http://example.com/1/cookbook
+Note the dotnotation to get the category title.
+The generated url in the sitemap will look like: http://example.com/kitchen/1/cookbook
 
 When a route does not contain entity variables, the entity parameter is not needed.
-All parameters will be assumed static. 
+All parameters will be assumed static.
 
      os_sitemap:
          path: "%kernel.root_dir%/../web/sitemap.xml"
-         
-         routes:  
+
+         routes:
           - loc: {route: _static, params: {page_name: about}}
             lastmod: 2013-05-16
             priority: 0.5
@@ -103,11 +105,11 @@ When my route is
 The generated url in the sitemap will look like http://example.com/about
 
 When combining parts of the example:
-     
+
      os_sitemap:
          path: "%kernel.root_dir%/../web/sitemap.xml"
-         
-         routes:  
+
+         routes:
           - loc: {route: _static, params: {page_name: about}}
             lastmod: 2013-05-16
             priority: 0.5
@@ -116,6 +118,7 @@ When combining parts of the example:
             loc: {route: _post, params: {post_id: id, {title: cookbook, static: true}}}
             lastmod: updatedAt
             priority: 0.5
+
 
 In your controller
 ==================
