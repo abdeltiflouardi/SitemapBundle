@@ -157,7 +157,7 @@
         public function createLastmodNode($configs, $entity=null)
         {
             if (!is_null($entity)) {
-                if (method_exists($entity, 'get' . ucfirst($configs['lastmod'])) {
+                if (method_exists($entity, 'get' . ucfirst($configs['lastmod']))) {
 
                     $value = $entity->{'get' . ucfirst($configs['lastmod'])}();
 
