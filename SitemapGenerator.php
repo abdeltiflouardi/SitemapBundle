@@ -18,13 +18,13 @@
         private $em;
 
         /**
-         * @var 
+         * @var
          */
         private $router;
 
         /**
          *
-         * @var array $configs 
+         * @var array $configs
          */
         private $configs;
 
@@ -37,7 +37,7 @@
          *
          * @param EntityManager $em
          * @param Router $router
-         * @param array $configs 
+         * @param array $configs
          */
         function __construct(EntityManager $em, $router, $configs)
         {
@@ -52,29 +52,29 @@
             $this->dom = new DOMDocument('1.0', 'UTF-8');
             $this->dom->formatOutput = true;
             $this->dom->substituteEntities = false;
-            
-                
+
+
             // Create <urlset> root tag
             $urlset = $this->dom->createElement('urlset');
-            
+
             // Add attribute of urlset
             $xmlns = $this->dom->createAttribute('xmlns');
-            $urlsetText = $this->dom->createTextNode('http://www.sitemaps.org/schemas/sitemap/0.9'); 
+            $urlsetText = $this->dom->createTextNode('http://www.sitemaps.org/schemas/sitemap/0.9');
             $urlset->appendChild($xmlns);
             $xmlns->appendChild($urlsetText);
 
             // Iterate over all routes in the config.
             foreach($this->configs['routes'] as $route => $routeConfig) {
 
-                // If entity in the config has been defined 
+                // If entity in the config has been defined
                 if (isset($this->configs['routes'][$route]['entity'])) {
-                    
+
                     // Fetch All entities
                     $entities = $this->em->getRepository($this->configs['routes'][$route]['entity'])->findAll();
-                    
+
                     // Creates an url node for each entity
                     foreach ($entities as $entity) {
-                        $url = $this->createUrlNode($this->configs['routes'][$route], $entity);  
+                        $url = $this->createUrlNode($this->configs['routes'][$route], $entity);
                         $urlset->appendChild($url);
                     }
                 } else {
@@ -115,7 +115,7 @@
             }
             return $url;
         }
-        
+
         /**
          * Creates a loc node (<loc><loc>)
          * @param array configs
@@ -128,17 +128,21 @@
                     // params: { key: {value: <some value>, static: true}}
                     if (isset($param['static']) && $param['static']) { $params[$key]  = $param['value'];
                     // params: { key: {class: <some class>, method: <some method>, field: <some method>}}
-                    } else {           
+                    } else {
                         $value        = $entity->{'get' . ucfirst($param['field'])}();
                         $object       = new $param['class'];
                         $params[$key] = $object->{$param['method']}($value);
                     }
                 } else {
                     if(is_null($entity)) {
-                        var_dump($param);
                         $params[$key]  = $param;
                     } else {
-                        $value        = $entity->{'get' . ucfirst($param)}();
+                        $value = $entity;
+
+                        foreach (preg_split("/\./", $param) as $attr) {
+                            $value = $value->{'get' . ucfirst($attr)}();
+                        }
+
                         $params[$key] = $value;
                     }
                 }
@@ -153,8 +157,9 @@
         public function createLastmodNode($configs, $entity=null)
         {
             if (!is_null($entity)) {
-                if (method_exists($entity, 'getLastmod()')) {
-                    $value = $entity->getLastmod();
+                if (method_exists($entity, 'get' . ucfirst($configs['lastmod'])} {
+
+                    $value = $entity->{'get' . ucfirst($configs['lastmod'])}();
 
                     if ($value instanceof DateTime) {
                         return $value->format('Y-m-d');
@@ -164,9 +169,9 @@
                 }
             }
             return $configs['lastmod'];
-                
+
         }
-        
+
         /**
          * Creates a priority node (<node></node>)
          * @param array configs
