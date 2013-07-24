@@ -41,6 +41,7 @@ params
 * **path**: this is path where you want to save sitemap file
 * **routes** : the routes
     * **entity**: Use this entity to generate my file, optional
+    * **repository_method**: Use this param to specify method which returns entities (by default uses "findAll"), optional
     * **loc**: this is a sitemap tag. we can use our route to generate link.
     * **lastmod**: use this param to generate lastmod tag
     * **priority**: priority
@@ -79,6 +80,7 @@ be passed to the controller as a string, and will not be fetched from the entity
 
          routes:
           - entity: AppCoreBundle:Post
+            repository_method: findEnablePosts
             loc: {route: _post, params: { category: category.title, post_id: id, {title: cookbook, static: true}}}
             lastmod: updatedAt
             priority: 0.5

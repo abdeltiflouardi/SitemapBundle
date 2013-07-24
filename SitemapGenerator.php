@@ -69,8 +69,21 @@
                 // If entity in the config has been defined
                 if (isset($this->configs['routes'][$route]['entity'])) {
 
+                    if (isset($this->configs['routes'][$route]['repository_method'])) {
+                        $method = $this->configs['routes'][$route]['repository_method'];
+                        if (method_exists($this->em->getRepository($this->configs['routes'][$route]['entity']), $method)) {
+                            $method = $this->configs['routes'][$route]['repository_method'];
+                        } else {
+                            throw new \BadMethodCallException(sprintf("The method %s not found in %s repository.", $method, $this->configs['routes'][$route]['entity']));
+                        }
+
+
+                    } else {
+                        $method = "findAll";
+                    }
+
                     // Fetch All entities
-                    $entities = $this->em->getRepository($this->configs['routes'][$route]['entity'])->findAll();
+                    $entities = $this->em->getRepository($this->configs['routes'][$route]['entity'])->$method();
 
                     // Creates an url node for each entity
                     foreach ($entities as $entity) {
