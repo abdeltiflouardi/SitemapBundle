@@ -81,7 +81,7 @@ be passed to the controller as a string, and will not be fetched from the entity
          routes:
           - entity: AppCoreBundle:Post
             repository_method: findEnablePosts
-            loc: {route: _post, params: { category: category.title, post_id: id, {title: cookbook, static: true}}}
+            loc: {route: _post, params: { category: category.title, post_id: id, title: {value: cookbook, static: true}}}
             lastmod: updatedAt
             priority: 0.5
 
@@ -117,7 +117,7 @@ When combining parts of the example:
             priority: 0.5
 
           - entity: AppCoreBundle:Post
-            loc: {route: _post, params: {post_id: id, {title: cookbook, static: true}}}
+            loc: {route: _post, params: {post_id: id, title: {value: cookbook, static: true}}}
             lastmod: updatedAt
             priority: 0.5
 
