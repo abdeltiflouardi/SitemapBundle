@@ -39,6 +39,7 @@ params
 -------
 
 * **path**: this is path where you want to save sitemap file
+* **host**: this is the host of your routes if to launch it in command line (by default "localhost"), optional
 * **routes** : the routes
     * **entity**: Use this entity to generate my file, optional
     * **repository_method**: Use this param to specify method which returns entities (by default uses "findAll"), optional
@@ -52,6 +53,7 @@ examples
 
      os_sitemap:
          path: "%kernel.root_dir%/../web/sitemap.xml"
+         host: example.com
 
          routes:
           - entity: AppCoreBundle:Post
@@ -77,6 +79,7 @@ be passed to the controller as a string, and will not be fetched from the entity
 
      os_sitemap:
          path: "%kernel.root_dir%/../web/sitemap.xml"
+         host: example.com
 
          routes:
           - entity: AppCoreBundle:Post
@@ -93,6 +96,7 @@ All parameters will be assumed static.
 
      os_sitemap:
          path: "%kernel.root_dir%/../web/sitemap.xml"
+         host: example.com
 
          routes:
           - loc: {route: _static, params: {page_name: about}}
@@ -110,6 +114,7 @@ When combining parts of the example:
 
      os_sitemap:
          path: "%kernel.root_dir%/../web/sitemap.xml"
+         host: example.com
 
          routes:
           - loc: {route: _static, params: {page_name: about}}
