@@ -53,7 +53,6 @@
             $this->dom->formatOutput = true;
             $this->dom->substituteEntities = false;
 
-
             // Create <urlset> root tag
             $urlset = $this->dom->createElement('urlset');
 
@@ -62,6 +61,11 @@
             $urlsetText = $this->dom->createTextNode('http://www.sitemaps.org/schemas/sitemap/0.9');
             $urlset->appendChild($xmlns);
             $xmlns->appendChild($urlsetText);
+
+            //When scripts run from the command line, you'll need to manually set the desired host
+            if (isset($this->configs['host'])) {
+                $this->router->getContext()->setHost($this->configs['host']);
+            }
 
             // Iterate over all routes in the config.
             foreach($this->configs['routes'] as $route => $routeConfig) {
@@ -182,7 +186,6 @@
                 }
             }
             return $configs['lastmod'];
-
         }
 
         /**
