@@ -14,7 +14,7 @@ class SitemapController extends Controller
     public function generateAction()
     {
         $sitemapGenerator = $this->get('sitemap.generator');
-        $r = $sitemapGenerator->generate();
+        $sitemapGenerator->generate();
 
         return new Response('<html><body><p>Created</p></body></html>');
     }
